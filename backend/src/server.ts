@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
 import { config } from './config/env';
 import { connectDB } from './config/db';
 import routes from './routes';
@@ -27,7 +28,24 @@ app.get('/health', (req, res) => {
 // API Routes
 app.use('/api', routes);
 
-// 404 Handler
+// Serve frontend static build in production
+const frontendDistPath = path.join(__dirname, '../../../frontend/dist');
+app.use(express.static(frontendDistPath));
+
+// Handle React SPA client routing (fallback to index.html for non-API requests)
+app.get('*', (req, res, next) => {
+  if (req.originalUrl.startsWith('/api')) {
+    return next();
+  }
+  const indexPath = path.join(frontendDistPath, 'index.html');
+  res.sendFile(indexPath, (err) => {
+    if (err) {
+      next();
+    }
+  });
+});
+
+// 404 Handler for undefined API routes
 app.use((req, res) => {
   res.status(404).json({ success: false, message: `Route ${req.originalUrl} not found.` });
 });
