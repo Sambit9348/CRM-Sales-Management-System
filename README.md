@@ -105,45 +105,53 @@ The system includes pre-seeded test accounts for evaluating different permission
 
 ---
 
-## 🚀 Setup & Local Installation
+## 🚀 Quick Start / Local Development
 
-### Prerequisites
-- Node.js (v18 or higher)
-- MongoDB Connection String (Atlas or local instance)
-
-### 1. Backend Setup
+### 1. Install Dependencies
+Run from the root directory:
 ```bash
-cd backend
+# Install root, backend, and frontend packages
 npm install
+npm run install:all
+```
 
-# Copy environment template to create .env file
-cp .env.example .env
-
+### 2. Start Both Frontend & Backend (One Command)
+```bash
 npm run dev
 ```
-Backend will start on `http://localhost:5000`.
-
-### 2. Frontend Setup
-```bash
-cd frontend
-npm install
-npm run dev
-```
-Frontend will start on `http://localhost:5173`.
+- **Backend API**: `http://localhost:5000`
+- **Frontend App**: `http://localhost:5173` (with Vite HMR and API proxy)
 
 ---
 
-## 🔐 Environment Variables
+## 🌐 Render Deployment Guide (Single Web Service)
 
-> 🛡️ **Security Note**: Sensitive environment configuration files (`.env`, `*.env`) are safely ignored by Git via `.gitignore` to prevent leaking secrets. Environment template files (`.env.example`) are provided in the root directory and in `backend/.env.example`.
+Deploy the entire fullstack application (Backend API + React Frontend) in **one single Web Service** on Render:
 
-To configure backend environment variables, copy `.env.example` to `.env` in the `backend/` directory:
+1. Go to [Render Dashboard](https://dashboard.render.com/) and click **New +** $\rightarrow$ **Web Service**.
+2. Connect your repository: `CRM-Sales-Management-System`.
+3. Configure the settings:
+   - **Root Directory**: *(Leave completely blank / empty)*
+   - **Runtime**: `Node`
+   - **Build Command**:
+     ```bash
+     npm run build
+     ```
+   - **Start Command**:
+     ```bash
+     npm start
+     ```
+   - **Instance Type**: `Free`
+4. Add the following **Environment Variables**:
+   - `NODE_ENV`: `production`
+   - `MONGODB_URI`: `mongodb+srv://<user>:<password>@cluster.mongodb.net/crm_sales_management?retryWrites=true&w=majority`
+   - `JWT_SECRET`: `your_secure_random_jwt_secret_key`
+   - `JWT_EXPIRES_IN`: `7d`
+5. Click **Deploy Web Service**.
 
-```bash
-cp backend/.env.example backend/.env
-```
+---
 
-### Environment Configuration Reference (`backend/.env`):
+## 🔐 Environment Variables Reference
 
 | Variable Name | Description | Default / Example Value |
 | :--- | :--- | :--- |
