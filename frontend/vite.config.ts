@@ -22,4 +22,10 @@ export default defineConfig({
       },
     },
   },
+  preview: {
+    host: '0.0.0.0',
+    allowedHosts: [
+      'crm-sales-management-system-2fjq.onrender.com',
+    ],
+  },
 });
