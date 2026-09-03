@@ -8,6 +8,7 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ): void => {
+  console.error('[API ERROR]', err);
   let statusCode = err.statusCode || 500;
   let message = err.message || 'Internal Server Error';
   let errors = err.errors || [];
