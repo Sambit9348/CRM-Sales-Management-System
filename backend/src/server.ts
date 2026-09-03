@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+import fs from 'fs';
 import { config } from './config/env';
 import { connectDB } from './config/db';
 import routes from './routes';
@@ -28,8 +29,17 @@ app.get('/health', (req, res) => {
 // API Routes
 app.use('/api', routes);
 
-// Serve frontend static build in production
-const frontendDistPath = path.join(__dirname, '../../../frontend/dist');
+// Determine frontend dist path reliably in both dev and production
+const candidatePaths = [
+  path.resolve(__dirname, '../../frontend/dist'),
+  path.resolve(__dirname, '../../../frontend/dist'),
+  path.resolve(process.cwd(), 'frontend/dist'),
+  path.resolve(process.cwd(), '../frontend/dist'),
+];
+
+const frontendDistPath = candidatePaths.find((p) => fs.existsSync(p)) || candidatePaths[0];
+console.log(`[STATIC] Serving frontend from: ${frontendDistPath} (exists: ${fs.existsSync(frontendDistPath)})`);
+
 app.use(express.static(frontendDistPath));
 
 // Handle React SPA client routing (fallback to index.html for non-API requests)
@@ -38,11 +48,10 @@ app.get('*', (req, res, next) => {
     return next();
   }
   const indexPath = path.join(frontendDistPath, 'index.html');
-  res.sendFile(indexPath, (err) => {
-    if (err) {
-      next();
-    }
-  });
+  if (fs.existsSync(indexPath)) {
+    return res.sendFile(indexPath);
+  }
+  next();
 });
 
 // 404 Handler for undefined API routes
