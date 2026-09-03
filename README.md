@@ -193,5 +193,3 @@ cp backend/.env.example backend/.env
 - [x] Redux Toolkit & RTK Query state management implemented
 - [x] README and setup documentation included
 - [x] Test credentials and environment variables documented
-#   C R M - S a l e s - M a n a g e m e n t - S y s t e m  
- 
