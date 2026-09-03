@@ -14,11 +14,11 @@ export const connectDB = async (): Promise<string> => {
   }
 
   try {
-    await mongoose.connect(uri);
+    await mongoose.connect(uri, { serverSelectionTimeoutMS: 5000 });
     console.log(`[SUCCESS] MongoDB Connected successfully to: ${uri.startsWith('mongodb://127.0.0.1') ? 'Local MongoDB' : uri.startsWith('mongodb+srv') ? 'MongoDB Atlas' : 'In-Memory MongoDB'}`);
     return uri;
   } catch (error) {
-    console.warn('[WARN] Failed to connect to configured MongoDB URI. Falling back to MongoMemoryServer...', error);
+    console.warn('[WARN] Failed to connect to configured MongoDB URI (check IP whitelist / network). Falling back to MongoMemoryServer...', error);
     mongoMemoryServer = await MongoMemoryServer.create();
     const fallbackUri = mongoMemoryServer.getUri();
     await mongoose.connect(fallbackUri);

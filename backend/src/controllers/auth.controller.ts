@@ -7,9 +7,10 @@ import { config } from '../config/env';
 import { AuthenticatedRequest } from '../middlewares/auth';
 
 const generateToken = (userId: string): string => {
+  const expiresIn = (config.jwtExpiresIn || '7d') as any;
   return jwt.sign({ id: userId }, config.jwtSecret, {
-    expiresIn: config.jwtExpiresIn,
-  } as jwt.SignOptions);
+    expiresIn,
+  });
 };
 
 export const login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
